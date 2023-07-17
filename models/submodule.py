@@ -232,9 +232,9 @@ class feature_extraction(nn.Module):
 ###############################################################################
 
 
-def interweave_tensors(refimg_fea, targetimg_fea):
+def interweave_tensors(refimg_fea, targetimg_fea, i):
     B, C, H, W = refimg_fea.shape
-    interwoven_features = refimg_fea.new_zeros([B, 2 * C, H, W])
+    interwoven_features = refimg_fea.new_zeros([1, 2 * 32, 48, 156 - i])
     interwoven_features[:,::2,:,:] = refimg_fea
     interwoven_features[:,1::2,:,:] = targetimg_fea
     interwoven_features = interwoven_features.contiguous()

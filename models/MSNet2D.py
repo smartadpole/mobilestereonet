@@ -139,17 +139,17 @@ class MSNet2D(nn.Module):
         featR = self.preconv11(features_R)
 
         B, C, H, W = featL.shape
-        volume = featL.new_zeros([B, self.num_groups, self.volume_size, H, W])
+        volume = featL.new_zeros([1, self.num_groups, self.volume_size, 48, 156])
         for i in range(self.volume_size):
             if i > 0:
-                x = interweave_tensors(featL[:, :, :, i:], featR[:, :, :, :-i])
+                x = interweave_tensors(featL[:, :, :, i:], featR[:, :, :, :-i], i)
                 x = torch.unsqueeze(x, 1)
                 x = self.conv3d(x)
                 x = torch.squeeze(x, 2)
                 x = self.volume11(x)
                 volume[:, :, i, :, i:] = x
             else:
-                x = interweave_tensors(featL, featR)
+                x = interweave_tensors(featL, featR, i)
                 x = torch.unsqueeze(x, 1)
                 x = self.conv3d(x)
                 x = torch.squeeze(x, 2)
@@ -201,8 +201,9 @@ class MSNet2D(nn.Module):
         else:
             cost3 = self.classif3(out3)
             cost3 = torch.unsqueeze(cost3, 1)
-            cost3 = F.interpolate(cost3, [self.maxdisp, L.size()[2], L.size()[3]], mode='trilinear')
-            cost3 = torch.squeeze(cost3, 1)
+            cost3 = F.interpolate(cost3, [self.maxdisp, 192, 624], mode='trilinear')
+            # cost3 = torch.squeeze(cost3, 1)
+            cost3 = cost3[:, 0, :, :, :]
             pred3 = F.softmax(cost3, dim=1)
             pred3 = disparity_regression(pred3, self.maxdisp)
 
