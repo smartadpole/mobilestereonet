@@ -108,6 +108,10 @@ frames_finalpass
 │   └───a_rain_of_stones_x2
 │   └─── ..
 ```
+### get onnx
+```shell
+python onnx/convert_to_onnx.py 
+```
 
 ### Training 
 
