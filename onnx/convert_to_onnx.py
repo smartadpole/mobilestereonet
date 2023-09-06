@@ -4,7 +4,7 @@ from models import __models__
 from utils import *
 
 maxdisp = 192
-name = "MSNet3D"
+name = "MSNet2D"
 
 model = __models__[name](maxdisp)
 model.cuda()
